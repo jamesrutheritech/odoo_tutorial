@@ -11,14 +11,12 @@ export const clickerService = {
     dependencies: ["effect", "notification"],
     
     start(env, { effect, notification }) {
-        // Global click tracking
         document.body.addEventListener(
             "click",
             () => clickerModel.increment(1),
             true
         );
 
-        // Milestone celebrations
         clickerModel.bus.addEventListener("MILESTONE_1K", () => {
             effect.add({
                 type: "rainbow_man",
@@ -47,7 +45,6 @@ export const clickerService = {
             });
         });
 
-        // Add reset function
         clickerModel.reset = () => {
             notification.add("Are you sure? This will delete all progress!", {
                 type: "warning",

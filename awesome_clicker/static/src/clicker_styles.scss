@@ -1,8 +1,3 @@
-// ============================================================================
-// Awesome Clicker - Professional Styles
-// ============================================================================
-
-// Color Palette
 $primary-color: #7C3AED;
 $secondary-color: #10B981;
 $accent-color: #F59E0B;
@@ -12,10 +7,6 @@ $light-bg: #F9FAFB;
 $border-color: #E5E7EB;
 $text-primary: #111827;
 $text-secondary: #6B7280;
-
-// ============================================================================
-// Systray Dropdown
-// ============================================================================
 
 .o_clicker_systray_dropdown {
     .dropdown-toggle {
@@ -52,7 +43,6 @@ $text-secondary: #6B7280;
         margin-top: 0.5rem;
     }
     
-    // Stats section
     .o_clicker_stats {
         padding: 1.25rem;
         border-bottom: 1px solid $border-color;
@@ -100,7 +90,6 @@ $text-secondary: #6B7280;
         }
     }
     
-    // Actions section
     .o_clicker_actions {
         padding: 0.5rem;
         
@@ -128,16 +117,12 @@ $text-secondary: #6B7280;
     }
 }
 
-// ============================================================================
-// Client Action (Main Game Interface)
-// ============================================================================
 
 .o_clicker_client_action {
     background: $light-bg;
     min-height: 100%;
     padding: 2rem !important;
     
-    // Header
     .o_clicker_header {
         background: white;
         border-radius: 1rem;
@@ -185,7 +170,6 @@ $text-secondary: #6B7280;
         }
     }
     
-    // Notebook tabs
     .o_notebook {
         background: transparent;
         
@@ -221,7 +205,6 @@ $text-secondary: #6B7280;
         }
     }
     
-    // Manual click button
     .o_clicker_main_button {
         text-align: center;
         margin-bottom: 2rem;
@@ -248,7 +231,6 @@ $text-secondary: #6B7280;
         }
     }
     
-    // Resource cards
     .o_clicker_card {
         background: white;
         border-radius: 1rem;
@@ -374,7 +356,6 @@ $text-secondary: #6B7280;
         }
     }
     
-    // Stats overview card
     .o_clicker_stats_card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -397,9 +378,6 @@ $text-secondary: #6B7280;
     }
 }
 
-// ============================================================================
-// Responsive Design
-// ============================================================================
 
 @media (max-width: 768px) {
     .o_clicker_client_action {
@@ -434,9 +412,6 @@ $text-secondary: #6B7280;
     }
 }
 
-// ============================================================================
-// Animations
-// ============================================================================
 
 @keyframes pulse {
     0%, 100% {
@@ -462,9 +437,6 @@ $text-secondary: #6B7280;
     animation: slideIn 0.3s ease;
 }
 
-// ============================================================================
-// Utility Classes
-// ============================================================================
 
 .text-gradient {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

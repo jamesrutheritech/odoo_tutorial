@@ -127,7 +127,6 @@ export class ClickerModel extends Reactive {
     }
 
     checkMilestones() {
-        // Level 1: ClickBots unlocked
         if (this.clicks >= 1000 && !this.milestones.level1) {
             console.log("🎉 MILESTONE: Level 1 reached (1,000 clicks)!");
             this.level = 1;
@@ -135,7 +134,6 @@ export class ClickerModel extends Reactive {
             this.bus.trigger("MILESTONE_1K");
         }
         
-        // Level 2: BigBots unlocked
         if (this.clicks >= 5000 && !this.milestones.level2) {
             console.log("🎉 MILESTONE: Level 2 reached (5,000 clicks)!");
             this.level = 2;
@@ -143,7 +141,6 @@ export class ClickerModel extends Reactive {
             this.bus.trigger("MILESTONE_5K");
         }
         
-        // Level 3: Power multiplier unlocked
         if (this.clicks >= 100000 && !this.milestones.level3) {
             console.log("🎉 MILESTONE: Level 3 reached (100,000 clicks)!");
             this.level = 3;
@@ -151,7 +148,6 @@ export class ClickerModel extends Reactive {
             this.bus.trigger("MILESTONE_100K");
         }
         
-        // Level 4: Trees unlocked
         if (this.clicks >= 1000000 && !this.milestones.level4) {
             console.log("🎉 MILESTONE: Level 4 reached (1,000,000 clicks)!");
             this.level = 4;

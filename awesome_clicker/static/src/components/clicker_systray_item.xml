@@ -1,98 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <!-- 
-        Professional Clicker Systray Dropdown
-    -->
     <t t-name="awesome_clicker.ClickerSystrayItem">
-        <Dropdown class="'o_clicker_systray_dropdown'">
-            <t t-set-slot="toggler">
-                <button class="btn btn-sm d-flex align-items-center gap-2" title="Clicker Game">
-                    <!-- Main stats in systray -->
-                    <span>🖱️ <ClickValue value="clicker.clicks"/></span>
-                    <t t-if="clicker.level >= 4">
-                        <span>🌳 <t t-esc="clicker.getTotalTrees()"/></span>
-                        <span>🍎 <t t-esc="clicker.getTotalFruits()"/></span>
-                    </t>
-                </button>
-            </t>
+
+        <Dropdown>
+            <!-- Trigger Button -->
+            <button slot="trigger" class="btn btn-sm d-flex align-items-center gap-2" title="Clicker Game">
+                <span>🖱️ <ClickValue value="clicker.clicks"/></span>
+                <t t-if="clicker.level >= 4">
+                    <span>🌳 <t t-esc="clicker.getTotalTrees()"/></span>
+                    <span>🍎 <t t-esc="clicker.getTotalFruits()"/></span>
+                </t>
+            </button>
 
             <!-- Dropdown content -->
-            <t t-set-slot="default">
-                <!-- Stats section with gradient background -->
-                <div class="o_clicker_stats">
-                    <strong>📊 Game Statistics</strong>
-                    
-                    <div class="stat-item">
-                        <span class="stat-label">🖱️ Total Clicks</span>
-                        <span class="stat-value"><ClickValue value="clicker.clicks"/></span>
-                    </div>
-                    
-                    <div class="stat-item">
-                        <span class="stat-label">⚡ Power Level</span>
-                        <span class="stat-value">x<t t-esc="clicker.power"/></span>
-                    </div>
-                    
-                    <t t-if="clicker.level >= 1">
-                        <div class="stat-item">
-                            <span class="stat-label">🤖 ClickBots</span>
-                            <span class="stat-value"><t t-esc="clicker.clickBots"/></span>
-                        </div>
-                    </t>
-                    
-                    <t t-if="clicker.level >= 2">
-                        <div class="stat-item">
-                            <span class="stat-label">🦾 BigBots</span>
-                            <span class="stat-value"><t t-esc="clicker.bigBots"/></span>
-                        </div>
-                    </t>
-                    
-                    <!-- Tree stats -->
-                    <t t-if="clicker.level >= 4">
-                        <div class="tree-stats">
-                            <div class="tree-item">
-                                🍐 Pears: <t t-esc="clicker.pearTrees"/> trees, <t t-esc="clicker.pearFruits"/> fruits
-                            </div>
-                            <div class="tree-item">
-                                🍒 Cherries: <t t-esc="clicker.cherryTrees"/> trees, <t t-esc="clicker.cherryFruits"/> fruits
-                            </div>
-                            <div class="tree-item">
-                                🍑 Peaches: <t t-esc="clicker.peachTrees"/> trees, <t t-esc="clicker.peachFruits"/> fruits
-                            </div>
-                        </div>
-                    </t>
+            <div class="o_clicker_stats">
+                <strong>📊 Game Statistics</strong>
+
+                <div class="stat-item">
+                    <span class="stat-label">🖱️ Total Clicks</span>
+                    <span class="stat-value"><ClickValue value="clicker.clicks"/></span>
                 </div>
 
-                <!-- Quick actions -->
-                <div class="o_clicker_actions">
-                    <DropdownItem onSelected="() => this.openClientAction()">
-                        🎮 Open Clicker Game
-                    </DropdownItem>
-                    
-                    <t t-if="clicker.level >= 1">
-                        <DropdownItem 
-                            onSelected="() => this.buyClickBot()"
-                            class="{'disabled': !canAfford(1000)}">
-                            🤖 Buy ClickBot (1,000)
-                        </DropdownItem>
-                    </t>
-                    
-                    <t t-if="clicker.level >= 2">
-                        <DropdownItem 
-                            onSelected="() => this.buyBigBot()"
-                            class="{'disabled': !canAfford(5000)}">
-                            🦾 Buy BigBot (5,000)
-                        </DropdownItem>
-                    </t>
-                    
-                    <t t-if="clicker.level >= 3">
-                        <DropdownItem 
-                            onSelected="() => this.buyPower()"
-                            class="{'disabled': !canAfford(50000)}">
-                            ⚡ Upgrade Power (50,000)
-                        </DropdownItem>
-                    </t>
+                <div class="stat-item">
+                    <span class="stat-label">⚡ Power Level</span>
+                    <span class="stat-value">x<t t-esc="clicker.power"/></span>
                 </div>
-            </t>
+
+                <t t-if="clicker.level >= 1">
+                    <div class="stat-item">
+                        <span class="stat-label">🤖 ClickBots</span>
+                        <span class="stat-value"><t t-esc="clicker.clickBots"/></span>
+                    </div>
+                </t>
+
+                <t t-if="clicker.level >= 2">
+                    <div class="stat-item">
+                        <span class="stat-label">🦾 BigBots</span>
+                        <span class="stat-value"><t t-esc="clicker.bigBots"/></span>
+                    </div>
+                </t>
+
+                <t t-if="clicker.level >= 4">
+                    <div class="tree-stats">
+                        <div class="tree-item">
+                            🍐 Pears: <t t-esc="clicker.pearTrees"/> trees, <t t-esc="clicker.pearFruits"/> fruits
+                        </div>
+                        <div class="tree-item">
+                            🍒 Cherries: <t t-esc="clicker.cherryTrees"/> trees, <t t-esc="clicker.cherryFruits"/> fruits
+                        </div>
+                        <div class="tree-item">
+                            🍑 Peaches: <t t-esc="clicker.peachTrees"/> trees, <t t-esc="clicker.peachFruits"/> fruits
+                        </div>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Actions -->
+            <div class="o_clicker_actions">
+                <DropdownItem onSelected="() => this.openClientAction()">
+                    🎮 Open Clicker Game
+                </DropdownItem>
+
+                <t t-if="clicker.level >= 1">
+                    <DropdownItem 
+                        onSelected="() => this.buyClickBot()"
+                        class="{'disabled': !canAfford(1000)}">
+                        🤖 Buy ClickBot (1,000)
+                    </DropdownItem>
+                </t>
+
+                <t t-if="clicker.level >= 2">
+                    <DropdownItem 
+                        onSelected="() => this.buyBigBot()"
+                        class="{'disabled': !canAfford(5000)}">
+                        🦾 Buy BigBot (5,000)
+                    </DropdownItem>
+                </t>
+
+                <t t-if="clicker.level >= 3">
+                    <DropdownItem 
+                        onSelected="() => this.buyPower()"
+                        class="{'disabled': !canAfford(50000)}">
+                        ⚡ Upgrade Power (50,000)
+                    </DropdownItem>
+                </t>
+            </div>
+
         </Dropdown>
+
     </t>
 </templates>

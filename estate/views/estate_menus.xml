@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Root App Menu with main action -->
+    <!-- Root Action (Required for App Icon to appear) -->
+    <record id="estate_root_action" model="ir.actions.act_window">
+        <field name="name">Real Estate</field>
+        <field name="res_model">estate.property</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Root App Menu -->
     <menuitem id="estate_menu_root"
               name="Real Estate"
               sequence="10"
-              web_icon="estate,static/description/icon.png"
-              action="estate_property_action"/>
+              action="estate_root_action"
+              web_icon="estate,static/description/icon.png"/>
 
     <!-- Properties -->
     <menuitem id="estate_menu_properties"
               name="Properties"
               parent="estate_menu_root"
-              sequence="10"/>
-
-    <!-- Properties Action (REQUIRED) -->
-    <menuitem id="estate_menu_property_action"
-              name="Properties"
-              parent="estate_menu_properties"
               action="estate_property_action"
               sequence="10"/>
 
     <!-- Offers -->
-    <menuitem id="estate_menu_property_offer_action"
+    <menuitem id="estate_menu_property_offer"
               name="Offers"
-              parent="estate_menu_properties"
+              parent="estate_menu_root"
               action="estate_property_offer_action"
               sequence="20"/>
 
-    <!-- Settings (Manager Only) -->
+    <!-- Settings Section -->
     <menuitem id="estate_menu_settings"
               name="Settings"
               parent="estate_menu_root"
-              sequence="90"
-              groups="estate_group_manager"/>
+              sequence="90"/>
 
     <!-- Property Types -->
-    <menuitem id="estate_menu_property_type_action"
+    <menuitem id="estate_menu_property_type"
               name="Property Types"
               parent="estate_menu_settings"
               action="estate_property_type_action"
-              sequence="10"
-              groups="estate_group_manager"/>
+              sequence="10"/>
 
     <!-- Property Tags -->
-    <menuitem id="estate_menu_property_tag_action"
+    <menuitem id="estate_menu_property_tag"
               name="Property Tags"
               parent="estate_menu_settings"
               action="estate_property_tag_action"
-              sequence="20"
-              groups="estate_group_manager"/>
+              sequence="20"/>
 
 </odoo>

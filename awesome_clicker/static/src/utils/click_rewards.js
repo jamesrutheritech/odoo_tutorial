@@ -1,13 +1,6 @@
 import { choose } from "./utils";
 
-/**
- * List of available rewards in the game
- * Each reward has:
- * - description: User-friendly text shown in notifications
- * - apply: Function that modifies the clicker state
- * - minLevel: (optional) Minimum unlock level required
- * - maxLevel: (optional) Maximum level where this reward is available
- */
+
 export const rewards = [
     {
         description: "Get 1 ClickBot",
@@ -69,11 +62,6 @@ export const rewards = [
     },
 ];
 
-/**
- * Gets a random reward appropriate for the current level
- * @param {number} level - Current unlock level
- * @returns {Object|null} A random reward object or null if none available
- */
 export function getReward(level) {
     const availableRewards = rewards.filter(reward => {
         const minOk = !reward.minLevel || level >= reward.minLevel;

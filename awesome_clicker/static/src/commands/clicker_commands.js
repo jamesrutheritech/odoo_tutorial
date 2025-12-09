@@ -1,26 +1,15 @@
-/** @odoo-module **/
-
 import { registry } from "@web/core/registry";
 
-/**
- * Command Palette Integration for Clicker Game
- * (Exercise 15)
- * 
- * Adds commands to quickly access game features via Ctrl+K
- */
 
 const commandPaletteRegistry = registry.category("command_provider");
 
-/**
- * Command: Open Clicker Game
- */
+
 commandPaletteRegistry.add("awesome_clicker.commands", {
     namespace: "clicker",
     provide: (env, options) => {
         const clicker = env.services.clicker_service;
         const commands = [];
 
-        // Command 1: Open the clicker game
         commands.push({
             name: "Open Clicker Game",
             action: () => {
@@ -33,7 +22,6 @@ commandPaletteRegistry.add("awesome_clicker.commands", {
             },
         });
 
-        // Command 2: Buy ClickBot (only if unlocked and affordable)
         if (clicker.level >= 1) {
             commands.push({
                 name: `Buy 1 ClickBot (1,000 clicks) ${clicker.clicks >= 1000 ? "✓" : "✗"}`,
@@ -52,7 +40,6 @@ commandPaletteRegistry.add("awesome_clicker.commands", {
             });
         }
 
-        // Command 3: Buy BigBot (only if unlocked and affordable)
         if (clicker.level >= 2) {
             commands.push({
                 name: `Buy 1 BigBot (5,000 clicks) ${clicker.clicks >= 5000 ? "✓" : "✗"}`,
@@ -71,7 +58,6 @@ commandPaletteRegistry.add("awesome_clicker.commands", {
             });
         }
 
-        // Command 4: Buy Power Upgrade (only if unlocked and affordable)
         if (clicker.level >= 3) {
             commands.push({
                 name: `Buy Power Upgrade (50,000 clicks) ${clicker.clicks >= 50000 ? "✓" : "✗"}`,
@@ -90,7 +76,6 @@ commandPaletteRegistry.add("awesome_clicker.commands", {
             });
         }
 
-        // Command 5: Plant Pear Tree (only if unlocked and affordable)
         if (clicker.level >= 4) {
             commands.push({
                 name: `Plant Pear Tree (1,000,000 clicks) ${clicker.clicks >= 1000000 ? "✓" : "✗"}`,
