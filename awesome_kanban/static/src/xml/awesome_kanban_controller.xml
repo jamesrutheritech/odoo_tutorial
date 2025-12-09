@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="awesome_kanban.KanbanViewWithSidebar" owl="1">
+        <div class="d-flex h-100">
+            <div class="o_awesomeKanbanSidebar">
+                <CustomerList onCustomerSelected.bind="selectCustomer"/>
+            </div>
+            <div class="o_awesomeKanbanMain flex-grow-1">
+                <t t-call="web.KanbanView"/>
+            </div>
+        </div>
+    </t>
+</templates>

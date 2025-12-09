@@ -1,0 +1,80 @@
+<templates xml:space="preserve">
+  <!-- Main dashboard -->
+  <t t-name="awesome_dashboard.AwesomeDashboard">
+    <div class="o_dashboard h-100">
+      <Layout display="displayOptions">
+        <t t-set-slot="layout-buttons">
+          <button class="btn btn-primary" t-on-click="openCustomers">
+            <i class="fa fa-users me-2"/>Customers
+          </button>
+          <button class="btn btn-primary ms-2" t-on-click="openLeads">
+            <i class="fa fa-star me-2"/>Leads
+          </button>
+        </t>
+        <t t-set-slot="layout-actions">
+          <button t-on-click="openConfigDialog" class="btn btn-secondary">
+            <i class="fa fa-cog me-2"/>Configure
+          </button>
+        </t>
+      </Layout>
+      <div class="o_dashboard_grid p-4">
+        <t t-foreach="items" t-as="item" t-key="item.id">
+          <DashboardItem item="item" statistics="statistics"/>
+        </t>
+      </div>
+    </div>
+  </t>
+
+  <!-- Generic dashboard item wrapper -->
+  <t t-name="awesome_dashboard.DashboardItem">
+    <div t-att-class="'o_dashboard_item o_size_' + (props.item.size || 1)">
+      <t t-component="props.item.Component" 
+         t-props="props.item.props ? props.item.props(props.statistics) : {'data': props.statistics}"/>
+    </div>
+  </t>
+
+  <!-- Number card template -->
+  <t t-name="awesome_dashboard.NumberCard">
+    <div class="o_number_card card">
+      <div class="card-body">
+        <div class="o_number_card_title h6 mb-2"><t t-esc="props.title"/></div>
+        <div class="o_number_card_value display-6"><t t-esc="props.value"/></div>
+      </div>
+    </div>
+  </t>
+
+  <!-- Pie chart card template -->
+  <t t-name="awesome_dashboard.PieChartCard">
+    <div class="o_pie_chart_card card">
+      <div class="card-body" style="height: 260px;">
+        <canvas t-ref="canvas" style="width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+  </t>
+
+  <!-- Dashboard Configuration Dialog -->
+  <t t-name="awesome_dashboard.DashboardConfigDialog">
+    <Dialog title="'Configure Dashboard'" size="'md'">
+      <div class="mb-3">
+        <p class="text-muted">Select which items you want to display on your dashboard:</p>
+      </div>
+      
+      <div class="list-group">
+        <t t-foreach="state.itemStates" t-as="item" t-key="item.id">
+          <div class="list-group-item d-flex align-items-center">
+            <CheckBox 
+              value="item.checked" 
+              onChange.bind="(checked) => this.onCheckboxChange(item.id, checked)" 
+            />
+            <span class="ms-2"><t t-esc="item.label"/></span>
+          </div>
+        </t>
+      </div>
+
+      <t t-set-slot="footer">
+        <button class="btn btn-secondary" t-on-click="props.close">Cancel</button>
+        <button class="btn btn-primary" t-on-click="onApply">Apply</button>
+      </t>
+    </Dialog>
+  </t>
+</templates>

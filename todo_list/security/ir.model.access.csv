@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id,perm_read,perm_write,perm_create,perm_unlink
+access_todo_task,todo.task,model_todo_task,,1,1,1,1
+access_todo_subtask,todo.subtask,model_todo_subtask,,1,1,1,1
+access_todo_category,todo.category,model_todo_category,,1,1,1,1
+access_todo_tag,todo.tag,model_todo_tag,,1,1,1,1

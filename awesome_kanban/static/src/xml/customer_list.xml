@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="awesome_kanban.CustomerList" owl="1">
+        <div class="o_customer_list">
+            <div class="o_customer_list_search">
+                <input type="text" 
+                       class="form-control" 
+                       placeholder="Search customers..." 
+                       t-on-input="onSearch"
+                       t-att-value="state.searchString"/>
+            </div>
+            <div class="o_customer_list_filter">
+                <label>
+                    <input type="checkbox" 
+                           t-att-checked="state.onlyActive" 
+                           t-on-change="onToggleActive"/>
+                    Only Active
+                </label>
+            </div>
+            <div class="o_customer_list_items">
+                <t t-foreach="state.customers" t-as="customer" t-key="customer.id">
+                    <div class="o_customer_list_item" 
+                         t-on-click="() => this.selectCustomer(customer)">
+                        <t t-esc="customer.display_name"/>
+                    </div>
+                </t>
+            </div>
+            <div class="o_customer_list_pager">
+                <Pager 
+                    offset="state.offset"
+                    limit="state.limit"
+                    total="state.total"
+                    onUpdate.bind="onPagerChange"/>
+            </div>
+        </div>
+    </t>
+</templates>

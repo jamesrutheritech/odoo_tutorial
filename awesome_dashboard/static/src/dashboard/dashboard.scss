@@ -1,0 +1,52 @@
+.o_dashboard {
+    background-color: #f0f0f0;
+
+    .o_dashboard_grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+
+        .o_dashboard_item {
+            &.o_size_1 {
+                grid-column: span 1;
+            }
+            &.o_size_2 {
+                grid-column: span 2;
+            }
+
+            .card {
+                height: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+            
+            .o_dashboard_item {
+                &.o_size_1,
+                &.o_size_2 {
+                    grid-column: span 1;
+                }
+            }
+        }
+    }
+}
+
+.o_number_card {
+    .o_number_card_title {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    .o_number_card_value {
+        color: #0d6efd;
+        font-weight: bold;
+    }
+}
+
+.o_pie_chart_card {
+    canvas {
+        max-width: 100%;
+        height: auto !important;
+    }
+}

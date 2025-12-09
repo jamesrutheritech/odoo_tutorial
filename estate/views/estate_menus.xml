@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root App Menu with main action -->
+    <menuitem id="estate_menu_root"
+              name="Real Estate"
+              sequence="10"
+              web_icon="estate,static/description/icon.png"
+              action="estate_property_action"/>
+
+    <!-- Properties -->
+    <menuitem id="estate_menu_properties"
+              name="Properties"
+              parent="estate_menu_root"
+              sequence="10"/>
+
+    <!-- Properties Action (REQUIRED) -->
+    <menuitem id="estate_menu_property_action"
+              name="Properties"
+              parent="estate_menu_properties"
+              action="estate_property_action"
+              sequence="10"/>
+
+    <!-- Offers -->
+    <menuitem id="estate_menu_property_offer_action"
+              name="Offers"
+              parent="estate_menu_properties"
+              action="estate_property_offer_action"
+              sequence="20"/>
+
+    <!-- Settings (Manager Only) -->
+    <menuitem id="estate_menu_settings"
+              name="Settings"
+              parent="estate_menu_root"
+              sequence="90"
+              groups="estate_group_manager"/>
+
+    <!-- Property Types -->
+    <menuitem id="estate_menu_property_type_action"
+              name="Property Types"
+              parent="estate_menu_settings"
+              action="estate_property_type_action"
+              sequence="10"
+              groups="estate_group_manager"/>
+
+    <!-- Property Tags -->
+    <menuitem id="estate_menu_property_tag_action"
+              name="Property Tags"
+              parent="estate_menu_settings"
+              action="estate_property_tag_action"
+              sequence="20"
+              groups="estate_group_manager"/>
+
+</odoo>

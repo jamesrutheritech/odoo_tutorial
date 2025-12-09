@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- 
+        Professional Clicker Client Action (With Reset Button)
+    -->
+    <t t-name="awesome_clicker.ClientAction">
+        <div class="o_clicker_client_action">
+            <!-- Header -->
+            <div class="o_clicker_header">
+                <h2>🎮 Awesome Clicker</h2>
+                <div class="o_clicker_header_stats">
+                    <div class="stat-badge">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value"><t t-esc="clicker.level"/></span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Total Clicks</span>
+                        <span class="stat-value"><ClickValue value="clicker.clicks"/></span>
+                    </div>
+                    <!-- Reset Button -->
+                    <button class="btn btn-sm btn-danger" t-on-click="resetGame" title="Reset game to zero">
+                        🔄 Reset Game
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notebook with tabs -->
+            <Notebook>
+                <!-- Tab 1: Clicks & Production -->
+                <t t-set-slot="page_1" title="'🖱️ Clicks &amp; Production'" isVisible="true">
+                    <div class="p-3">
+                        <!-- Manual Click Button -->
+                        <div class="o_clicker_main_button">
+                            <button class="btn btn-click" t-on-click="click">
+                                Click Me! (+<t t-esc="clicker.getClickPower()"/> clicks)
+                            </button>
+                        </div>
+
+                        <!-- Statistics Card -->
+                        <div class="o_clicker_card o_clicker_stats_card">
+                            <div class="card-header">
+                                <div class="card-icon">📊</div>
+                                <div class="card-title-group">
+                                    <h5>Game Statistics</h5>
+                                </div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">Total Clicks</div>
+                                    <div class="stat-value"><ClickValue value="clicker.clicks"/></div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Power Multiplier</div>
+                                    <div class="stat-value">x<t t-esc="clicker.power"/></div>
+                                </div>
+                                <t t-if="clicker.level >= 1">
+                                    <div class="stat-item">
+                                        <div class="stat-label">Production/10s</div>
+                                        <div class="stat-value">
+                                            +<t t-esc="(clicker.clickBots * 10 + clicker.bigBots * 100) * clicker.power"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- ClickBots Card -->
+                        <t t-if="clicker.level >= 1">
+                            <div class="o_clicker_card">
+                                <div class="card-header">
+                                    <div class="card-icon">🤖</div>
+                                    <div class="card-title-group">
+                                        <h5>ClickBot Factory</h5>
+                                        <p class="card-description">Automatic click generation: 10 clicks every 10 seconds</p>
+                                    </div>
+                                </div>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-label">Owned</div>
+                                        <div class="stat-value"><t t-esc="clicker.clickBots"/></div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Production Rate</div>
+                                        <div class="stat-value">
+                                            +<t t-esc="clicker.clickBots * 10 * clicker.power"/> /10s
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button 
+                                        class="btn btn-purchase"
+                                        t-on-click="buyClickBot"
+                                        t-att-disabled="!canAfford(1000)">
+                                        <t t-if="canAfford(1000)">
+                                            Purchase ClickBot - 1,000 clicks
+                                        </t>
+                                        <t t-else="">
+                                            Need 1,000 clicks
+                                        </t>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- BigBots Card -->
+                        <t t-if="clicker.level >= 2">
+                            <div class="o_clicker_card">
+                                <div class="card-header">
+                                    <div class="card-icon">🦾</div>
+                                    <div class="card-title-group">
+                                        <h5>BigBot Manufacturing</h5>
+                                        <p class="card-description">Heavy-duty automation: 100 clicks every 10 seconds</p>
+                                    </div>
+                                </div>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-label">Owned</div>
+                                        <div class="stat-value"><t t-esc="clicker.bigBots"/></div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Production Rate</div>
+                                        <div class="stat-value">
+                                            +<t t-esc="clicker.bigBots * 100 * clicker.power"/> /10s
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button 
+                                        class="btn btn-purchase"
+                                        t-on-click="buyBigBot"
+                                        t-att-disabled="!canAfford(5000)">
+                                        <t t-if="canAfford(5000)">
+                                            Purchase BigBot - 5,000 clicks
+                                        </t>
+                                        <t t-else="">
+                                            Need 5,000 clicks
+                                        </t>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Power Upgrades Card -->
+                        <t t-if="clicker.level >= 3">
+                            <div class="o_clicker_card">
+                                <div class="card-header">
+                                    <div class="card-icon">⚡</div>
+                                    <div class="card-title-group">
+                                        <h5>Power Core Upgrades</h5>
+                                        <p class="card-description">Multiply all bot production by +1</p>
+                                    </div>
+                                </div>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-label">Current Power</div>
+                                        <div class="stat-value">x<t t-esc="clicker.power"/></div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Next Level</div>
+                                        <div class="stat-value">x<t t-esc="clicker.power + 1"/></div>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button 
+                                        class="btn btn-upgrade"
+                                        t-on-click="buyPower"
+                                        t-att-disabled="!canAfford(50000)">
+                                        <t t-if="canAfford(50000)">
+                                            Upgrade Power - 50,000 clicks
+                                        </t>
+                                        <t t-else="">
+                                            Need 50,000 clicks
+                                        </t>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+
+                <!-- Tab 2: Trees & Fruits -->
+                <t t-set-slot="page_2" title="'🌳 Orchard'" isVisible="clicker.level >= 4">
+                    <div class="p-3">
+                        <!-- Orchard Overview -->
+                        <div class="o_clicker_card o_clicker_stats_card">
+                            <div class="card-header">
+                                <div class="card-icon">🌳</div>
+                                <div class="card-title-group">
+                                    <h5>Orchard Overview</h5>
+                                    <p class="card-description">Your fruit production empire</p>
+                                </div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">Total Trees</div>
+                                    <div class="stat-value"><t t-esc="clicker.getTotalTrees()"/></div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Total Fruits</div>
+                                    <div class="stat-value"><t t-esc="clicker.getTotalFruits()"/></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pear Trees -->
+                        <div class="o_clicker_card">
+                            <div class="card-header">
+                                <div class="card-icon">🍐</div>
+                                <div class="card-title-group">
+                                    <h5>Pear Orchard</h5>
+                                    <p class="card-description">Sweet and juicy: 1 pear every 30 seconds per tree</p>
+                                </div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">Trees Planted</div>
+                                    <div class="stat-value"><t t-esc="clicker.pearTrees"/></div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Fruits Harvested</div>
+                                    <div class="stat-value"><t t-esc="clicker.pearFruits"/></div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button 
+                                    class="btn btn-purchase"
+                                    t-on-click="buyPearTree"
+                                    t-att-disabled="!canAfford(1000000)">
+                                    <t t-if="canAfford(1000000)">
+                                        Plant Pear Tree - 1,000,000 clicks
+                                    </t>
+                                    <t t-else="">
+                                        Need 1,000,000 clicks
+                                    </t>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cherry Trees -->
+                        <div class="o_clicker_card">
+                            <div class="card-header">
+                                <div class="card-icon">🍒</div>
+                                <div class="card-title-group">
+                                    <h5>Cherry Orchard</h5>
+                                    <p class="card-description">Tangy delight: 1 cherry every 30 seconds per tree</p>
+                                </div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">Trees Planted</div>
+                                    <div class="stat-value"><t t-esc="clicker.cherryTrees"/></div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Fruits Harvested</div>
+                                    <div class="stat-value"><t t-esc="clicker.cherryFruits"/></div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button 
+                                    class="btn btn-purchase"
+                                    t-on-click="buyCherryTree"
+                                    t-att-disabled="!canAfford(1000000)">
+                                    <t t-if="canAfford(1000000)">
+                                        Plant Cherry Tree - 1,000,000 clicks
+                                    </t>
+                                    <t t-else="">
+                                        Need 1,000,000 clicks
+                                    </t>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Peach Trees -->
+                        <div class="o_clicker_card">
+                            <div class="card-header">
+                                <div class="card-icon">🍑</div>
+                                <div class="card-title-group">
+                                    <h5>Peach Orchard</h5>
+                                    <p class="card-description">Summer sweetness: 1 peach every 30 seconds per tree</p>
+                                </div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-item">
+                                    <div class="stat-label">Trees Planted</div>
+                                    <div class="stat-value"><t t-esc="clicker.peachTrees"/></div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Fruits Harvested</div>
+                                    <div class="stat-value"><t t-esc="clicker.peachFruits"/></div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button 
+                                    class="btn btn-purchase"
+                                    t-on-click="buyPeachTree"
+                                    t-att-disabled="!canAfford(1000000)">
+                                    <t t-if="canAfford(1000000)">
+                                        Plant Peach Tree - 1,000,000 clicks
+                                    </t>
+                                    <t t-else="">
+                                        Need 1,000,000 clicks
+                                    </t>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </Notebook>
+        </div>
+    </t>
+</templates>

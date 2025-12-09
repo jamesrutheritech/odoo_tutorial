@@ -1,15 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
-    <record id="crm_lead_kanban_inherited" model="ir.ui.view">
-        <field name="name">crm.lead.kanban.lead.awesome_gallery</field>
+    <record id="view_crm_lead_kanban_awesome" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.awesome</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="arch" type="xml">
-            <xpath expr="//kanban" position="attributes">
+            <kanban position="attributes">
                 <attribute name="js_class">awesome_kanban</attribute>
-            </xpath>
+            </kanban>
         </field>
     </record>
-  </data>
 </odoo>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="awesome_dashboard_action" model="ir.actions.client">
+        <field name="name">Awesome Dashboard</field>
+        <field name="tag">awesome_dashboard.dashboard</field>
+    </record>
+
+    <menuitem id="awesome_dashboard_menu_root"
+              name="Awesome Dashboard"
+              action="awesome_dashboard_action"
+              sequence="10"/>
+</odoo>

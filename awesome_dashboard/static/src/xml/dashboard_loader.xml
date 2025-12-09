@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+  <!-- Dashboard Loader -->
+  <t t-name="awesome_dashboard.DashboardLoader">
+    <LazyComponent bundle="'awesome_dashboard.dashboard_assets'" Component="'AwesomeDashboard'" />
+  </t>
+</templates>
