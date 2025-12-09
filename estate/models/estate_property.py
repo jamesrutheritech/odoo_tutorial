@@ -7,6 +7,7 @@ class EstateProperty(models.Model):
     _description = 'Real Estate Property'
     _order = "id desc"
 
+    # ... [Field Definitions remain the same] ...
     name = fields.Char(required=True)
     description = fields.Text()
     postcode = fields.Char()
@@ -50,7 +51,9 @@ class EstateProperty(models.Model):
     
     # SECURITY CHAPTER EXERCISE: Multi-company Field
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-
+    
+    # ... [Compute, Onchange, and Constraint Methods remain the same] ...
+    
     total_area = fields.Float(compute="_compute_total_area", store=True)
     best_price = fields.Float(compute="_compute_best_price", store=True)
 
@@ -75,29 +78,49 @@ class EstateProperty(models.Model):
         else:
             self.garden_area = 0.0
             self.garden_orientation = False
-            
-    # SECURITY CHAPTER EXERCISE: Programmatically checking security
+
+    # --- CORRECTED action_sold METHOD ---
+
     def action_sold(self):
         """
-        Mark property as sold.
-        The check_access is the programmatic security check required by the tutorial.
+        Marks property as sold and creates the invoice using sudo() for security bypass.
         """
-        # SECURITY CHAPTER: Programmatic Security Check
+        # SECURITY CHAPTER: Programmatic Security Check (Required)
         self.check_access(['write'])
         
         for record in self:
             if record.state == 'canceled':
                 raise UserError("Canceled properties cannot be sold.")
             
-            # Additional logic: Check for required fields if an offer was accepted
             if record.state == 'offer_accepted' and (not record.buyer_id or not record.selling_price):
                 raise UserError(
                     "You must have a Buyer and Selling Price set before marking the property as sold."
                 )
 
+            # --- SECURITY CHAPTER: SECURITY BYPASS (SUDO) ADDED HERE ---
+            if 'account.move' in self.env:
+                self.env['account.move'].sudo().create({
+                    'partner_id': record.buyer_id.id,
+                    'move_type': 'out_invoice',
+                    'invoice_line_ids': [
+                        (0, 0, {
+                            'name': f"Selling Property: {record.name} (Commission)",
+                            'quantity': 1,
+                            'price_unit': record.selling_price * 0.06,
+                        }),
+                        (0, 0, {
+                            'name': 'Administrative Fees',
+                            'quantity': 1,
+                            'price_unit': 100.00,
+                        }),
+                    ],
+                })
+            
             record.state = 'sold'
         return True
 
+    # ... [action_cancel, _check_price_difference, and _unlink_if_new_or_canceled remain the same] ...
+    
     def action_cancel(self):
         """Cancel property"""
         for record in self:
