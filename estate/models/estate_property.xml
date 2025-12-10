@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Define the model -->
     <record id="model_real_estate_property" model="ir.model">
         <field name="name">Real Estate Property</field>
         <field name="model">x_estate.property</field>
     </record>
 
-    <!-- Name -->
     <record id="field_real_estate_property_name" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_name</field>
@@ -15,7 +13,6 @@
         <field name="required">True</field>
     </record>
 
-    <!-- Description -->
     <record id="field_real_estate_property_description" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_description</field>
@@ -23,7 +20,6 @@
         <field name="ttype">text</field>
     </record>
 
-    <!-- Postcode -->
     <record id="field_real_estate_property_postcode" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_postcode</field>
@@ -31,7 +27,6 @@
         <field name="ttype">char</field>
     </record>
 
-    <!-- Selling Price -->
     <record id="field_real_estate_property_selling_price" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_selling_price</field>
@@ -39,7 +34,6 @@
         <field name="ttype">float</field>
     </record>
 
-    <!-- Date availability -->
     <record id="field_real_estate_property_date_availability" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_date_availability</field>
@@ -47,7 +41,6 @@
         <field name="ttype">date</field>
     </record>
 
-    <!-- Expected price -->
     <record id="field_real_estate_property_expected_price" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_expected_price</field>
@@ -56,7 +49,6 @@
         <field name="required">True</field>
     </record>
 
-    <!-- Bedrooms -->
     <record id="field_real_estate_property_bedrooms" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_bedrooms</field>
@@ -64,7 +56,6 @@
         <field name="ttype">integer</field>
     </record>
 
-    <!-- Living area -->
     <record id="field_real_estate_property_living_area" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_living_area</field>
@@ -72,7 +63,6 @@
         <field name="ttype">integer</field>
     </record>
 
-    <!-- Facades -->
     <record id="field_real_estate_property_facades" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_facades</field>
@@ -80,7 +70,6 @@
         <field name="ttype">integer</field>
     </record>
 
-    <!-- Garage -->
     <record id="field_real_estate_property_garage" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_garage</field>
@@ -88,7 +77,6 @@
         <field name="ttype">boolean</field>
     </record>
 
-    <!-- Garden -->
     <record id="field_real_estate_property_garden" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_garden</field>
@@ -96,7 +84,6 @@
         <field name="ttype">boolean</field>
     </record>
 
-    <!-- Garden area -->
     <record id="field_real_estate_property_garden_area" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_garden_area</field>
@@ -104,7 +91,6 @@
         <field name="ttype">integer</field>
     </record>
 
-    <!-- Garden orientation (selection) -->
     <record id="field_real_estate_property_garden_orientation" model="ir.model.fields">
         <field name="model_id" ref="estate.model_real_estate_property"/>
         <field name="name">x_garden_orientation</field>
@@ -112,7 +98,6 @@
         <field name="ttype">selection</field>
     </record>
 
-    <!-- Selection values -->
     <record id="selection_garden_orientation_north" model="ir.model.fields.selection">
         <field name="field_id" ref="estate.field_real_estate_property_garden_orientation"/>
         <field name="value">north</field>
@@ -139,5 +124,30 @@
         <field name="value">west</field>
         <field name="name">West</field>
         <field name="sequence">4</field>
+    </record>
+    
+    <record id="field_real_estate_property_type_id" model="ir.model.fields">
+        <field name="model_id" ref="estate.model_real_estate_property" />
+        <field name="name">x_property_type_id</field>
+        <field name="field_description">Property Type</field>
+        <field name="ttype">many2one</field>
+        <field name="relation">x_estate.property.type</field>
+        <field name="required">True</field>
+    </record>
+
+    <record id="field_real_estate_property_partner_id" model="ir.model.fields">
+        <field name="model_id" ref="estate.model_real_estate_property" />
+        <field name="name">x_partner_id</field>
+        <field name="field_description">Buyer</field>
+        <field name="ttype">many2one</field>
+        <field name="relation">res.partner</field>
+    </record>
+
+    <record id="field_real_estate_property_user_id" model="ir.model.fields">
+        <field name="model_id" ref="estate.model_real_estate_property" />
+        <field name="name">x_user_id</field>
+        <field name="field_description">Salesperson</field>
+        <field name="ttype">many2one</field>
+        <field name="relation">res.users</field>
     </record>
 </odoo>

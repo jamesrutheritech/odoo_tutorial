@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- List view -->
     <record id="view_estate_property_list" model="ir.ui.view">
         <field name="name">estate.property.list</field>
         <field name="model">x_estate.property</field>
@@ -13,7 +12,6 @@
         </field>
     </record>
 
-    <!-- Form view -->
     <record id="view_estate_property_form" model="ir.ui.view">
         <field name="name">estate.property.form</field>
         <field name="model">x_estate.property</field>
@@ -40,10 +38,19 @@
         </field>
     </record>
 
-    <!-- Action -->
     <record id="estate_property_action" model="ir.actions.act_window">
         <field name="name">Properties</field>
         <field name="res_model">x_estate.property</field>
         <field name="view_mode">list,form</field>
     </record>
+
+    <menuitem id="menu_root"
+        name="Estate"
+        sequence="10"/>
+
+    <menuitem id="estate_property_menu_action"
+        name="Properties"
+        action="estate_property_action"
+        parent="menu_root"
+        sequence="10"/>
 </odoo>
