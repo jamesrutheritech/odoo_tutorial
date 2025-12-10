@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <!-- Security Groups -->
     <record id="estate_group_user" model="res.groups">
         <field name="name">Real Estate / Agent</field>
-        </record>
+        <field name="category_id" ref="base.module_category_sales"/>
+    </record>
 
     <record id="estate_group_manager" model="res.groups">
         <field name="name">Real Estate / Manager</field>
+        <field name="category_id" ref="base.module_category_sales"/>
         <field name="implied_ids" eval="[(4, ref('estate_group_user'))]"/>
-        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/> 
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
+    <!-- Record Rules (Row-level security) -->
+    
+    <!-- Rule 1: Multi-company access -->
     <record id="estate_property_rule_company" model="ir.rule">
         <field name="name">Estate Property: Multi-company access</field>
         <field name="model_id" ref="model_estate_property"/>
-        <field name="global" eval="True"/> <field name="domain_force">
+        <field name="global" eval="True"/>
+        <field name="domain_force">
             [
                 '|',
                     ('company_id', '=', False),
@@ -23,6 +29,7 @@
         </field>
     </record>
 
+    <!-- Rule 2: Agents can only see their own properties -->
     <record id="estate_property_rule_user" model="ir.rule">
         <field name="name">Estate Property: Agent can only see their properties</field>
         <field name="model_id" ref="model_estate_property"/>
@@ -30,19 +37,21 @@
         <field name="domain_force">
             [
                 '|',
-                    ('salesperson_id', '=', user.id), 
-                    ('salesperson_id', '=', False)
+                    ('user_id', '=', user.id), 
+                    ('user_id', '=', False)
             ]
         </field>
     </record>
 
+    <!-- Rule 3: Managers see all properties -->
     <record id="estate_property_rule_manager" model="ir.rule">
         <field name="name">Estate Property: Manager sees all properties (Bypass)</field>
         <field name="model_id" ref="model_estate_property"/>
         <field name="groups" eval="[(4, ref('estate_group_manager'))]"/>
-        <field name="domain_force">[(1, '=', 1)]</field> </record>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
 
-
+    <!-- Configuration Menus -->
     <menuitem id="estate_settings_menu_root" 
               name="Configuration" 
               parent="estate_menu_root" 
@@ -52,7 +61,10 @@
     <menuitem id="estate_property_type_menu_action" 
               name="Property Types" 
               action="estate_property_type_action" 
-              parent="estate_settings_menu_root"/> <menuitem id="estate_property_tag_menu_action" 
+              parent="estate_settings_menu_root"/> 
+
+    <menuitem id="estate_property_tag_menu_action" 
               name="Property Tags" 
               action="estate_property_tag_action" 
-              parent="estate_settings_menu_root"/> </odoo>
+              parent="estate_settings_menu_root"/> 
+</odoo>
