@@ -1,3 +1,5 @@
+# estate/models/estate_property.py
+
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_compare
@@ -22,7 +24,7 @@ class EstateProperty(models.Model):
     facades = fields.Integer()
     garage = fields.Boolean()
     garden = fields.Boolean()
-    garden_area = fields.Integer()
+    garden_area = fields.Integer() # Keep as Integer
     garden_orientation = fields.Selection(
         selection=[
             ('north', 'North'),
@@ -49,10 +51,7 @@ class EstateProperty(models.Model):
     tag_ids = fields.Many2many('estate.property.tag', string='Tags')
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
     
-    # SECURITY CHAPTER EXERCISE: Multi-company Field
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    
-    # ... [Compute, Onchange, and Constraint Methods remain the same] ...
     
     total_area = fields.Float(compute="_compute_total_area", store=True)
     best_price = fields.Float(compute="_compute_best_price", store=True)
@@ -72,32 +71,41 @@ class EstateProperty(models.Model):
 
     @api.onchange("garden")
     def _onchange_garden(self):
+        # Implementation for Exercise 2: Reset on uncheck
         if self.garden:
-            self.garden_area = 10.0
+            self.garden_area = 10
             self.garden_orientation = 'north'
         else:
-            self.garden_area = 0.0
-            self.garden_orientation = False
-
-    # --- CORRECTED action_sold METHOD ---
+            self.garden_area = 0
+            self.garden_orientation = False # Resetting to False
+            
+    # --- UPDATED action_sold METHOD (Exercise 1 Constraint) ---
 
     def action_sold(self):
         """
-        Marks property as sold and creates the invoice using sudo() for security bypass.
+        Marks property as sold.
+        Constraint 1: Must have accepted offers.
         """
-        # SECURITY CHAPTER: Programmatic Security Check (Required)
         self.check_access(['write'])
         
         for record in self:
             if record.state == 'canceled':
                 raise UserError("Canceled properties cannot be sold.")
             
+            # --- NEW CONSTRAINT FOR UNIT TEST EXERCISE ---
+            accepted_offers = record.offer_ids.filtered(lambda o: o.status == 'accepted')
+            if not accepted_offers:
+                 raise UserError("You must have at least one accepted offer to sell a property.")
+            # ---------------------------------------------
+
             if record.state == 'offer_accepted' and (not record.buyer_id or not record.selling_price):
+                # Note: This check should logically come after checking for accepted offers,
+                # or should be handled by the offer acceptance process.
                 raise UserError(
                     "You must have a Buyer and Selling Price set before marking the property as sold."
                 )
 
-            # --- SECURITY CHAPTER: SECURITY BYPASS (SUDO) ADDED HERE ---
+            # --- SECURITY BYPASS (SUDO) FOR INVOICE CREATION ---
             if 'account.move' in self.env:
                 self.env['account.move'].sudo().create({
                     'partner_id': record.buyer_id.id,
@@ -119,8 +127,6 @@ class EstateProperty(models.Model):
             record.state = 'sold'
         return True
 
-    # ... [action_cancel, _check_price_difference, and _unlink_if_new_or_canceled remain the same] ...
-    
     def action_cancel(self):
         """Cancel property"""
         for record in self:
