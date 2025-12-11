@@ -89,7 +89,7 @@ class EstatePropertyOffer(models.Model):
             # Update parent property with selling details and state
             record.property_id.write({
                 'selling_price': record.price,
-                'buyer_id': record.partner_id.id,
+                'x_partner_id': record.partner_id.id, # <<<--- FIXED: RENAMED buyer_id to x_partner_id
                 'state': 'offer_accepted',
             })
 
@@ -107,12 +107,12 @@ class EstatePropertyOffer(models.Model):
                 
                 if not remaining_accepted:
                     # If no accepted offers remain, reset property selling details
-                    # If there are *any* offers (even refused ones), state is 'offer_received', otherwise 'new'.
+                    # Note: We must also update the buyer field name here!
                     new_state = 'offer_received' if record.property_id.offer_ids else 'new'
                     
                     record.property_id.write({
                         'selling_price': 0.0,
-                        'buyer_id': False,
+                        'x_partner_id': False, # <<<--- FIXED: RENAMED buyer_id to x_partner_id
                         'state': new_state,
                     })
         return True

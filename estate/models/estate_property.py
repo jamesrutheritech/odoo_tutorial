@@ -9,7 +9,7 @@ class EstateProperty(models.Model):
     _description = 'Real Estate Property'
     _order = "id desc"
 
-    # ... [Field Definitions remain the same] ...
+    # --- Standard Fields ---
     name = fields.Char(required=True)
     description = fields.Text()
     postcode = fields.Char()
@@ -24,7 +24,7 @@ class EstateProperty(models.Model):
     facades = fields.Integer()
     garage = fields.Boolean()
     garden = fields.Boolean()
-    garden_area = fields.Integer() # Keep as Integer
+    garden_area = fields.Integer() 
     garden_orientation = fields.Selection(
         selection=[
             ('north', 'North'),
@@ -45,14 +45,36 @@ class EstateProperty(models.Model):
         required=True,
         copy=False
     )
-    property_type_id = fields.Many2one('estate.property.type', string='Property Type')
-    buyer_id = fields.Many2one('res.partner', string='Buyer', copy=False)
-    salesperson_id = fields.Many2one('res.users', string='Salesperson', default=lambda self: self.env.user)
+    
+    # --- Exercise Required Fields (Replacing standard ones) ---
+    
+    # 1. Many2one (x_estate.property.type) - REQUIRED
+    x_property_type_id = fields.Many2one(
+        'estate.property.type',   # Links to the model you created
+        string='Property Type',
+        required=True  # As specified in the exercise
+    )
+    
+    # 2. Many2one (res.partner) - Buyer
+    x_partner_id = fields.Many2one(
+        'res.partner', 
+        string='Buyer (Partner)', 
+        copy=False
+    )
+    
+    # 3. Many2one (res.users) - Salesperson
+    x_user_id = fields.Many2one(
+        'res.users', 
+        string='Salesperson', 
+        default=lambda self: self.env.user
+    )
+
+    # --- Relational Fields ---
     tag_ids = fields.Many2many('estate.property.tag', string='Tags')
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
-    
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     
+    # --- Computed Fields ---
     total_area = fields.Float(compute="_compute_total_area", store=True)
     best_price = fields.Float(compute="_compute_best_price", store=True)
 
@@ -71,20 +93,19 @@ class EstateProperty(models.Model):
 
     @api.onchange("garden")
     def _onchange_garden(self):
-        # Implementation for Exercise 2: Reset on uncheck
         if self.garden:
             self.garden_area = 10
             self.garden_orientation = 'north'
         else:
             self.garden_area = 0
-            self.garden_orientation = False # Resetting to False
+            self.garden_orientation = False
             
-    # --- UPDATED action_sold METHOD (Exercise 1 Constraint) ---
+    # --- Constraint Methods ---
 
     def action_sold(self):
         """
         Marks property as sold.
-        Constraint 1: Must have accepted offers.
+        UPDATED to use x_partner_id.
         """
         self.check_access(['write'])
         
@@ -92,23 +113,19 @@ class EstateProperty(models.Model):
             if record.state == 'canceled':
                 raise UserError("Canceled properties cannot be sold.")
             
-            # --- NEW CONSTRAINT FOR UNIT TEST EXERCISE ---
             accepted_offers = record.offer_ids.filtered(lambda o: o.status == 'accepted')
             if not accepted_offers:
                  raise UserError("You must have at least one accepted offer to sell a property.")
-            # ---------------------------------------------
 
-            if record.state == 'offer_accepted' and (not record.buyer_id or not record.selling_price):
-                # Note: This check should logically come after checking for accepted offers,
-                # or should be handled by the offer acceptance process.
+            if record.state == 'offer_accepted' and (not record.x_partner_id or not record.selling_price):
                 raise UserError(
                     "You must have a Buyer and Selling Price set before marking the property as sold."
                 )
 
-            # --- SECURITY BYPASS (SUDO) FOR INVOICE CREATION ---
+            # Creating invoice (if account module is installed)
             if 'account.move' in self.env:
                 self.env['account.move'].sudo().create({
-                    'partner_id': record.buyer_id.id,
+                    'partner_id': record.x_partner_id.id, # <-- Using x_partner_id
                     'move_type': 'out_invoice',
                     'invoice_line_ids': [
                         (0, 0, {
@@ -138,6 +155,7 @@ class EstateProperty(models.Model):
     @api.constrains("expected_price", "selling_price")
     def _check_price_difference(self):
         for record in self:
+            # Check if selling_price is set (not 0.0)
             if float_compare(record.selling_price, 0.0, precision_digits=2) != 0 and \
                float_compare(record.selling_price, record.expected_price * 0.9, precision_digits=2) < 0:
                 raise UserError("The selling price cannot be lower than 90% of the expected price.")
