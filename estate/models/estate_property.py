@@ -46,6 +46,13 @@ class EstateProperty(models.Model):
         copy=False
     )
     
+    # NEW FIELD FOR API
+    x_api_published = fields.Boolean(
+        string='Published on API',
+        default=False,
+        help='If checked, this property will be available through the public API'
+    )
+    
     # --- Many2one Fields ---
     
     x_property_type_id = fields.Many2one(

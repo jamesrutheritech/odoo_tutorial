@@ -14,11 +14,12 @@ Real Estate property listing and management.
     ],
     "data": [
         # 1. SECURITY (Access rights must be loaded first)
+        "security/estate_security.xml",  # Make sure this is FIRST
         "security/ir.model.access.csv",
         
         # 2. DATA (Records needed for configuration/defaults)
         "data/estate_property_type_data.xml",
-        "data/estate_property_offer_actions.xml",  # ← ADD THIS LINE
+        "data/estate_property_offer_actions.xml",
         
         # 3. VIEWS/ACTIONS (Window actions and view definitions)
         "views/estate_property_views.xml",

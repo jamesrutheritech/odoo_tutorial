@@ -9,6 +9,7 @@
                 <field name="expected_price"/>
                 <field name="bedrooms"/>
                 <field name="x_property_type_id"/>
+                <field name="x_api_published"/>
             </list>
         </field>
     </record>
@@ -38,6 +39,7 @@
                         <field name="garage"/>
                         <field name="garden"/>
                         <field name="garden_orientation"/>
+                        <field name="x_api_published"/>
                     </group>
                     <notebook>
                         <page string="Offers">
@@ -47,7 +49,7 @@
                                     <field name="x_partner_id"/>
                                     <field name="x_status"/>
                                     
-                                    <!-- CHANGED: type="action" to call server actions -->
+                                    <!-- Server action buttons -->
                                     <button name="estate.action_accept_offer"
                                             string="Accept"
                                             type="action"
