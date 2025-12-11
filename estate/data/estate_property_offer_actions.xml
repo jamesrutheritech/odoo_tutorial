@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Server Action: Accept Offer for x_estate.property.offer -->
+    <record id="action_accept_offer" model="ir.actions.server">
+        <field name="name">Accept Offer</field>
+        <field name="model_id" ref="model_x_estate_property_offer"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+# Iterate through selected offer records
+for offer in records:
+    # Check if property is canceled or sold
+    if offer.x_property_id.state == 'canceled':
+        raise UserError("Canceled properties cannot accept offers.")
+    
+    if offer.x_property_id.state == 'sold':
+        raise UserError("Cannot accept an offer for a property that is already sold.")
+    
+    # 1. Set current offer status to 'accepted'
+    offer.write({'x_status': 'accepted'})
+    
+    # 2. Update the property's selling price and buyer
+    offer.x_property_id.write({
+        'selling_price': offer.x_price,
+        'x_partner_id': offer.x_partner_id.id,
+        'state': 'offer_accepted',
+    })
+    
+    # 3. Refuse all other offers on the same property
+    other_offers = offer.x_property_id.x_offer_ids.filtered(lambda o: o.id != offer.id)
+    other_offers.write({'x_status': 'refused'})
+]]></field>
+    </record>
+
+    <!-- Server Action: Refuse Offer for x_estate.property.offer -->
+    <record id="action_refuse_offer" model="ir.actions.server">
+        <field name="name">Refuse Offer</field>
+        <field name="model_id" ref="model_x_estate_property_offer"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+for offer in records:
+    if offer.x_status != 'refused':
+        offer.write({'x_status': 'refused'})
+        
+        # Check if this property has any remaining accepted offers
+        remaining_accepted = offer.x_property_id.x_offer_ids.filtered(
+            lambda r: r.x_status == 'accepted'
+        )
+        
+        if not remaining_accepted:
+            # If no accepted offers remain, reset property selling details
+            new_state = 'offer_received' if offer.x_property_id.x_offer_ids else 'new'
+            
+            offer.x_property_id.write({
+                'selling_price': 0.0,
+                'x_partner_id': False,
+                'state': new_state,
+            })
+]]></field>
+    </record>
+</odoo>

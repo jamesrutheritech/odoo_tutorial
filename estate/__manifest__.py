@@ -15,16 +15,17 @@ Real Estate property listing and management.
     "data": [
         # 1. SECURITY (Access rights must be loaded first)
         "security/ir.model.access.csv",
-
+        
         # 2. DATA (Records needed for configuration/defaults)
         "data/estate_property_type_data.xml",
-
+        "data/estate_property_offer_actions.xml",  # ← ADD THIS LINE
+        
         # 3. VIEWS/ACTIONS (Window actions and view definitions)
         "views/estate_property_views.xml",
         "views/estate_property_type_views.xml",
         "views/estate_property_tag_views.xml",
         "views/estate_property_offer_views.xml",
-
+        
         # 4. MENUS (Menu items must be loaded after the actions they call)
         "views/estate_menus.xml",
     ],

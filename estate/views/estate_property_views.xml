@@ -46,15 +46,18 @@
                                     <field name="x_price"/>
                                     <field name="x_partner_id"/>
                                     <field name="x_status"/>
-                                    <button name="action_accept_offer"
+                                    
+                                    <!-- CHANGED: type="action" to call server actions -->
+                                    <button name="estate.action_accept_offer"
                                             string="Accept"
-                                            type="object"
+                                            type="action"
                                             class="oe_highlight"
                                             icon="fa-check"
                                             attrs="{'invisible': [('x_status', '!=', False)]}"/>
-                                    <button name="action_refuse_offer"
+                                    
+                                    <button name="estate.action_refuse_offer"
                                             string="Refuse"
-                                            type="object"
+                                            type="action"
                                             icon="fa-times"
                                             attrs="{'invisible': [('x_status', '!=', False)]}"/>
                                 </list>
@@ -71,5 +74,4 @@
         <field name="res_model">estate.property</field>
         <field name="view_mode">list,form</field>
     </record>
-
 </odoo>

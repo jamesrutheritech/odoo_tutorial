@@ -42,9 +42,14 @@ class EstatePropertyOffer(models.Model):
                 record.validity = (record.date_deadline - fields.Date.to_date(record.create_date)).days
             # We don't need an else, as the validity field will retain its value or default
 
-    date_deadline = fields.Date(compute="_compute_date_deadline", inverse="_inverse_date_deadline", store=True, string="Deadline")
+    date_deadline = fields.Date(
+        compute="_compute_date_deadline", 
+        inverse="_inverse_date_deadline", 
+        store=True, 
+        string="Deadline"
+    )
 
-    # --- CORRECTED CREATE METHOD ---
+    # --- CREATE METHOD ---
     @api.model
     def create(self, vals_list):
         """
@@ -71,8 +76,7 @@ class EstatePropertyOffer(models.Model):
         # Call the original create method
         return super(EstatePropertyOffer, self).create(vals_list)
 
-
-    # Workflow Methods
+    # --- WORKFLOW METHODS ---
     def action_accept(self):
         """Accepts the current offer, updates the property, and refuses all others."""
         for record in self:
@@ -81,7 +85,9 @@ class EstatePropertyOffer(models.Model):
                 raise UserError("Cannot accept an offer for a property that is sold or canceled.")
             
             # Refuse all other existing offers for this property
-            other_offers = record.property_id.offer_ids.filtered(lambda r: r.id != record.id and r.status != 'refused')
+            other_offers = record.property_id.offer_ids.filtered(
+                lambda r: r.id != record.id and r.status != 'refused'
+            )
             other_offers.action_refuse()
             
             record.status = 'accepted'
@@ -89,7 +95,7 @@ class EstatePropertyOffer(models.Model):
             # Update parent property with selling details and state
             record.property_id.write({
                 'selling_price': record.price,
-                'x_partner_id': record.partner_id.id, # <<<--- FIXED: RENAMED buyer_id to x_partner_id
+                'x_partner_id': record.partner_id.id,
                 'state': 'offer_accepted',
             })
 
@@ -103,16 +109,17 @@ class EstatePropertyOffer(models.Model):
                 record.status = 'refused'
                 
                 # Check if this property has any remaining accepted offers
-                remaining_accepted = record.property_id.offer_ids.filtered(lambda r: r.status == 'accepted')
+                remaining_accepted = record.property_id.offer_ids.filtered(
+                    lambda r: r.status == 'accepted'
+                )
                 
                 if not remaining_accepted:
                     # If no accepted offers remain, reset property selling details
-                    # Note: We must also update the buyer field name here!
                     new_state = 'offer_received' if record.property_id.offer_ids else 'new'
                     
                     record.property_id.write({
                         'selling_price': 0.0,
-                        'x_partner_id': False, # <<<--- FIXED: RENAMED buyer_id to x_partner_id
+                        'x_partner_id': False,
                         'state': new_state,
                     })
         return True
