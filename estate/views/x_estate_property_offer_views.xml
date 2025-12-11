@@ -27,4 +27,17 @@
             </form>
         </field>
     </record>
+    
+    <record id="action_property_offer_accept" model="ir.actions.server">
+        <field name="name">Accept Offer</field>
+        <field name="model_id" ref="estate.model_x_estate_property_offer"/>
+        <field name="binding_model_id" ref="estate.model_x_estate_property_offer"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+            # The records variable contains the offers selected by the user
+            for offer in records:
+                offer.action_accept_offer()
+        </field>
+    </record>
 </odoo>
