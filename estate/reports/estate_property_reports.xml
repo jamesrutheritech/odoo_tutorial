@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_report_estate_property" model="ir.actions.report">
+        <field name="name">Property Report</field>
+        <field name="model">estate.property</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">estate.report_estate_property_template</field>
+        <field name="report_file">estate.report_estate_property_template</field>
+        <field name="binding_model_id" ref="model_estate_property"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_estate_property_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="property">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h2 class="text-center">
+                                    <strong>Property Report</strong>
+                                </h2>
+                            </div>
+                        </div>
+
+                        <!-- Property Information -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h3><span t-field="property.name"/></h3>
+                            </div>
+                        </div>
+
+                        <!-- Property Details Table -->
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td class="text-end" style="width: 30%;"><strong>Property Type:</strong></td>
+                                    <td style="width: 70%;">
+                                        <span t-field="property.x_property_type_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Postcode:</strong></td>
+                                    <td><span t-field="property.postcode"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Expected Price:</strong></td>
+                                    <td>
+                                        <span t-field="property.expected_price" 
+                                              t-options='{"widget": "monetary", "display_currency": property.company_id.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="property.selling_price">
+                                    <td class="text-end"><strong>Selling Price:</strong></td>
+                                    <td>
+                                        <span t-field="property.selling_price"
+                                              t-options='{"widget": "monetary", "display_currency": property.company_id.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Status:</strong></td>
+                                    <td>
+                                        <span t-field="property.state"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Bedrooms:</strong></td>
+                                    <td><span t-field="property.bedrooms"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Living Area:</strong></td>
+                                    <td><span t-field="property.living_area"/> m²</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Total Area:</strong></td>
+                                    <td><span t-field="property.total_area"/> m²</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Garden:</strong></td>
+                                    <td>
+                                        <span t-if="property.garden">Yes (<span t-field="property.garden_area"/> m²)</span>
+                                        <span t-else="">No</span>
+                                    </td>
+                                </tr>
+                                <tr t-if="property.garden and property.garden_orientation">
+                                    <td class="text-end"><strong>Garden Orientation:</strong></td>
+                                    <td><span t-field="property.garden_orientation"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Garage:</strong></td>
+                                    <td>
+                                        <span t-if="property.garage">Yes</span>
+                                        <span t-else="">No</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Facades:</strong></td>
+                                    <td><span t-field="property.facades"/></td>
+                                </tr>
+                                <tr t-if="property.x_user_id">
+                                    <td class="text-end"><strong>Salesperson:</strong></td>
+                                    <td><span t-field="property.x_user_id.name"/></td>
+                                </tr>
+                                <tr t-if="property.x_partner_id">
+                                    <td class="text-end"><strong>Buyer:</strong></td>
+                                    <td><span t-field="property.x_partner_id.name"/></td>
+                                </tr>
+                                <tr t-if="property.x_property_tag_ids">
+                                    <td class="text-end"><strong>Tags:</strong></td>
+                                    <td>
+                                        <t t-foreach="property.x_property_tag_ids" t-as="tag">
+                                            <span class="badge bg-primary me-1" t-esc="tag.name"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Description Section -->
+                        <div class="row mb-3" t-if="property.description">
+                            <div class="col-12">
+                                <h4>Description</h4>
+                                <p t-field="property.description"/>
+                            </div>
+                        </div>
+
+                        <!-- Offers Section with Conditional Logic -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4>Offers</h4>
+                                
+                                <!-- If there are offers, show table -->
+                                <t t-if="property.x_offer_ids">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Partner</th>
+                                                <th class="text-end">Price</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Validity (days)</th>
+                                                <th class="text-center">Deadline</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="property.x_offer_ids" t-as="offer">
+                                                <td><span t-field="offer.x_partner_id.name"/></td>
+                                                <td class="text-end">
+                                                    <span t-field="offer.x_price"
+                                                          t-options='{"widget": "monetary", "display_currency": property.company_id.currency_id}'/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-if="offer.x_status == 'accepted'" class="badge bg-success">Accepted</span>
+                                                    <span t-elif="offer.x_status == 'refused'" class="badge bg-danger">Refused</span>
+                                                    <span t-else="" class="badge bg-secondary">Pending</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="offer.x_validity" t-if="offer.x_validity"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="offer.x_date_deadline" t-if="offer.x_date_deadline"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <!-- Best Offer Summary -->
+                                    <div class="row mt-2" t-if="property.best_price">
+                                        <div class="col-12 text-end">
+                                            <strong>Best Offer: </strong>
+                                            <span t-field="property.best_price"
+                                                  t-options='{"widget": "monetary", "display_currency": property.company_id.currency_id}'/>
+                                        </div>
+                                    </div>
+                                </t>
+                                
+                                <!-- If no offers, show message -->
+                                <t t-else="">
+                                    <div class="alert alert-info">
+                                        <i class="fa fa-info-circle"/> No offers have been received for this property yet.
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Footer with Generation Date -->
+                        <div class="row mt-5">
+                            <div class="col-12 text-center text-muted">
+                                <small>
+                                    Report generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

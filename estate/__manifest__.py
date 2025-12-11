@@ -7,14 +7,14 @@
     "sequence": 10,
     "summary": "Real Estate property listing and management",
     "description": """
-Real Estate property listing and management.
+Real Estate property listing and management with JSON API.
     """,
     "depends": [
         "base",
     ],
     "data": [
         # 1. SECURITY (Access rights must be loaded first)
-        "security/estate_security.xml",  # Make sure this is FIRST
+        "security/estate_security.xml",
         "security/ir.model.access.csv",
         
         # 2. DATA (Records needed for configuration/defaults)
@@ -27,7 +27,10 @@ Real Estate property listing and management.
         "views/estate_property_tag_views.xml",
         "views/estate_property_offer_views.xml",
         
-        # 4. MENUS (Menu items must be loaded after the actions they call)
+        # 4. REPORTS
+        "reports/estate_property_reports.xml",
+        
+        # 5. MENUS (Menu items must be loaded after the actions they call)
         "views/estate_menus.xml",
     ],
     "demo": [
