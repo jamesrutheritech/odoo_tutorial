@@ -46,23 +46,20 @@ class EstateProperty(models.Model):
         copy=False
     )
     
-    # --- Exercise Required Fields (Replacing standard ones) ---
+    # --- Exercise Required Many2one Fields ---
     
-    # 1. Many2one (x_estate.property.type) - REQUIRED
     x_property_type_id = fields.Many2one(
-        'estate.property.type',   # Links to the model you created
+        'estate.property.type',
         string='Property Type',
-        required=True  # As specified in the exercise
+        required=True
     )
     
-    # 2. Many2one (res.partner) - Buyer
     x_partner_id = fields.Many2one(
         'res.partner', 
         string='Buyer (Partner)', 
         copy=False
     )
     
-    # 3. Many2one (res.users) - Salesperson
     x_user_id = fields.Many2one(
         'res.users', 
         string='Salesperson', 
@@ -70,7 +67,13 @@ class EstateProperty(models.Model):
     )
 
     # --- Relational Fields ---
-    tag_ids = fields.Many2many('estate.property.tag', string='Tags')
+    
+    # NEW FIELD ADDED FOR THIS EXERCISE: Many2many to x_estate.property.tag
+    x_property_tag_ids = fields.Many2many(
+        'x_estate.property.tag', 
+        string='Tags'
+    ) 
+    
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     
@@ -103,10 +106,7 @@ class EstateProperty(models.Model):
     # --- Constraint Methods ---
 
     def action_sold(self):
-        """
-        Marks property as sold.
-        UPDATED to use x_partner_id.
-        """
+        # ... action_sold logic remains the same ...
         self.check_access(['write'])
         
         for record in self:
@@ -125,7 +125,7 @@ class EstateProperty(models.Model):
             # Creating invoice (if account module is installed)
             if 'account.move' in self.env:
                 self.env['account.move'].sudo().create({
-                    'partner_id': record.x_partner_id.id, # <-- Using x_partner_id
+                    'partner_id': record.x_partner_id.id,
                     'move_type': 'out_invoice',
                     'invoice_line_ids': [
                         (0, 0, {
@@ -145,7 +145,7 @@ class EstateProperty(models.Model):
         return True
 
     def action_cancel(self):
-        """Cancel property"""
+        # ... action_cancel logic remains the same ...
         for record in self:
             if record.state == 'sold':
                 raise UserError("Sold properties cannot be canceled.")
@@ -154,6 +154,7 @@ class EstateProperty(models.Model):
 
     @api.constrains("expected_price", "selling_price")
     def _check_price_difference(self):
+        # ... constraint logic remains the same ...
         for record in self:
             # Check if selling_price is set (not 0.0)
             if float_compare(record.selling_price, 0.0, precision_digits=2) != 0 and \
@@ -162,6 +163,7 @@ class EstateProperty(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_if_new_or_canceled(self):
+        # ... unlink logic remains the same ...
         for record in self:
             if record.state not in ('new', 'canceled'):
                 raise UserError("Only new or canceled properties can be deleted.")
