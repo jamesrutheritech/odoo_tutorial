@@ -46,7 +46,7 @@ class EstateProperty(models.Model):
         copy=False
     )
     
-    # --- Exercise Required Many2one Fields ---
+    # --- Many2one Fields ---
     
     x_property_type_id = fields.Many2one(
         'estate.property.type',
@@ -66,19 +66,26 @@ class EstateProperty(models.Model):
         default=lambda self: self.env.user
     )
 
-    # --- Relational Fields ---
+    # --- Relational Fields (One2many and Many2many) ---
     
-    # NEW FIELD ADDED FOR THIS EXERCISE: Many2many to x_estate.property.tag
     x_property_tag_ids = fields.Many2many(
         'x_estate.property.tag', 
         string='Tags'
     ) 
     
-    offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
+    # ONE2MANY FIELD ADDED FOR CURRENT EXERCISE
+    x_offer_ids = fields.One2many(
+        'x_estate.property.offer', # Link to the new offer model
+        'x_property_id',           # Reverse field in the offer model
+        string='Offers'
+    )
+    
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     
     # --- Computed Fields ---
     total_area = fields.Float(compute="_compute_total_area", store=True)
+    
+    # UPDATED: Depends on the new x_offer_ids and x_price fields
     best_price = fields.Float(compute="_compute_best_price", store=True)
 
     @api.depends("living_area", "garden_area")
@@ -86,11 +93,13 @@ class EstateProperty(models.Model):
         for prop in self:
             prop.total_area = prop.living_area + prop.garden_area
 
-    @api.depends("offer_ids.price")
+    # UPDATED: Uses the new x_offer_ids and x_price fields
+    @api.depends("x_offer_ids.x_price")
     def _compute_best_price(self):
         for prop in self:
-            if prop.offer_ids:
-                prop.best_price = max(prop.offer_ids.mapped('price'))
+            if prop.x_offer_ids:
+                # Use x_offer_ids and x_price
+                prop.best_price = max(prop.x_offer_ids.mapped('x_price'))
             else:
                 prop.best_price = 0.0
 
@@ -103,17 +112,22 @@ class EstateProperty(models.Model):
             self.garden_area = 0
             self.garden_orientation = False
             
-    # --- Constraint Methods ---
+    # --- Constraint Methods & Workflow ---
 
     def action_sold(self):
-        # ... action_sold logic remains the same ...
+        """
+        Marks property as sold.
+        UPDATED to check x_offer_ids and x_status.
+        """
         self.check_access(['write'])
         
         for record in self:
             if record.state == 'canceled':
                 raise UserError("Canceled properties cannot be sold.")
             
-            accepted_offers = record.offer_ids.filtered(lambda o: o.status == 'accepted')
+            # UPDATED: Use x_offer_ids and x_status
+            accepted_offers = record.x_offer_ids.filtered(lambda o: o.x_status == 'accepted') 
+            
             if not accepted_offers:
                  raise UserError("You must have at least one accepted offer to sell a property.")
 
@@ -145,7 +159,7 @@ class EstateProperty(models.Model):
         return True
 
     def action_cancel(self):
-        # ... action_cancel logic remains the same ...
+        """Cancel property"""
         for record in self:
             if record.state == 'sold':
                 raise UserError("Sold properties cannot be canceled.")
@@ -154,7 +168,6 @@ class EstateProperty(models.Model):
 
     @api.constrains("expected_price", "selling_price")
     def _check_price_difference(self):
-        # ... constraint logic remains the same ...
         for record in self:
             # Check if selling_price is set (not 0.0)
             if float_compare(record.selling_price, 0.0, precision_digits=2) != 0 and \
@@ -163,7 +176,6 @@ class EstateProperty(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_if_new_or_canceled(self):
-        # ... unlink logic remains the same ...
         for record in self:
             if record.state not in ('new', 'canceled'):
                 raise UserError("Only new or canceled properties can be deleted.")

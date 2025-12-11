@@ -28,7 +28,8 @@
                         <field name="selling_price"/>
                         
                         <field name="x_property_type_id"/>
-                        <field name="x_property_tag_ids"/> <field name="x_partner_id"/>
+                        <field name="x_property_tag_ids"/> 
+                        <field name="x_partner_id"/>
                         <field name="x_user_id"/>
                         
                         <field name="bedrooms"/>
@@ -39,6 +40,18 @@
                         <field name="garden_area"/>
                         <field name="garden_orientation"/>
                     </group>
+                    
+                    <notebook>
+                        <page string="Offers">
+                            <field name="x_offer_ids">
+                                <list editable="bottom">
+                                    <field name="x_price"/>
+                                    <field name="x_partner_id"/>
+                                    <field name="x_status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
